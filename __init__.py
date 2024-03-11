@@ -1,6 +1,7 @@
 # http://remotescripts.blogspot.com
 
-from LiveAPI_MakeDoc import APIMakeDoc
+from . import LiveAPI_MakeDoc
 
 def create_instance(c_instance):
-    return APIMakeDoc(c_instance)
+    """ Creates and returns the script """
+    return LiveAPI_MakeDoc.MakeDocSurface(c_instance)

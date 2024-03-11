@@ -27,9 +27,9 @@ __credits__ = \
     'GvR, ESR, Tim Peters, Thomas Wouters, Fred Drake, Skip Montanaro'
 
 import string, re
-from token import *
+from .token import *
 
-import token
+from . import token
 __all__ = [x for x in dir(token) if x[0] != '_'] + ["COMMENT", "tokenize",
            "generate_tokens", "NL", "untokenize"]
 del x
@@ -97,8 +97,8 @@ ContStr = group(r"[uU]?[rR]?'[^\n'\\]*(?:\\.[^\n'\\]*)*" +
 PseudoExtras = group(r'\\\r?\n', Comment, Triple)
 PseudoToken = Whitespace + group(PseudoExtras, Number, Funny, ContStr, Name)
 
-tokenprog, pseudoprog, single3prog, double3prog = map(
-    re.compile, (Token, PseudoToken, Single3, Double3))
+tokenprog, pseudoprog, single3prog, double3prog = list(map(
+    re.compile, (Token, PseudoToken, Single3, Double3)))
 endprogs = {"'": re.compile(Single), '"': re.compile(Double),
             "'''": single3prog, '"""': double3prog,
             "r'''": single3prog, 'r"""': double3prog,
@@ -132,9 +132,11 @@ class TokenError(Exception): pass
 
 class StopTokenizing(Exception): pass
 
-def printtoken(type, token, (srow, scol), (erow, ecol), line): # for testing
-    print "%d,%d-%d,%d:\t%s\t%s" % \
-        (srow, scol, erow, ecol, tok_name[type], repr(token))
+def printtoken(type, token, xxx_todo_changeme, xxx_todo_changeme1, line): # for testing
+    (srow, scol) = xxx_todo_changeme
+    (erow, ecol) = xxx_todo_changeme1
+    print("%d,%d-%d,%d:\t%s\t%s" % \
+        (srow, scol, erow, ecol, tok_name[type], repr(token)))
 
 def tokenize(readline, tokeneater=printtoken):
     """
@@ -232,7 +234,7 @@ def generate_tokens(readline):
 
         if contstr:                            # continued string
             if not line:
-                raise TokenError, ("EOF in multi-line string", strstart)
+                raise TokenError("EOF in multi-line string", strstart)
             endmatch = endprog.match(line)
             if endmatch:
                 pos = end = endmatch.end(0)
@@ -280,7 +282,7 @@ def generate_tokens(readline):
 
         else:                                  # continued statement
             if not line:
-                raise TokenError, ("EOF in multi-line statement", (lnum, 0))
+                raise TokenError("EOF in multi-line statement", (lnum, 0))
             continued = 0
 
         while pos < max:
